@@ -281,9 +281,9 @@ def evaluate(board):
 
 minnum = float('-inf')
 maxnum = float('inf')
-def analyse(board,depth,alpha,beta):
+def analyse(board,depth,alpha,beta,maxdepth = 4):
     best_point = [0,0]
-    if depth > 4:
+    if depth > maxdepth:
         return evaluate(board),best_point
     curvalue = 0
     possible_points = seek_points(board,depth)
@@ -291,7 +291,7 @@ def analyse(board,depth,alpha,beta):
         copy_board = copy.deepcopy(board)
         if depth % 2 != 0:
             copy_board[p[0]][p[1]] = 2
-            curvalue,t = analyse(copy_board,depth+1,alpha,beta)
+            curvalue,t = analyse(copy_board,depth+1,alpha,beta,maxdepth)
             copy_board[p[0]][p[1]] = 0
             if curvalue > alpha:
                 alpha = curvalue
@@ -300,7 +300,7 @@ def analyse(board,depth,alpha,beta):
                 return alpha,best_point
         else:
             copy_board[p[0]][p[1]] = 1
-            curvalue,t = analyse(copy_board,depth+1,alpha,beta)
+            curvalue,t = analyse(copy_board,depth+1,alpha,beta,maxdepth)
             copy_board[p[0]][p[1]] = 0
             if curvalue < beta:
                 beta = curvalue
