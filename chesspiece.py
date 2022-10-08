@@ -4,8 +4,8 @@ from game_value import GameValue
 class ChessPiece:
     def __init__(self,color,center):
         self.images = {
-            'white' : pygame.image.load('gobang/images/white_chesspiece.png'),
-            'black' : pygame.image.load('gobang/images/black_chesspiece.png'),
+            'white' : pygame.image.load('images/white_chesspiece.png'),
+            'black' : pygame.image.load('images/black_chesspiece.png'),
         }
         self.color = color
         self.image = self.images[self.color]
