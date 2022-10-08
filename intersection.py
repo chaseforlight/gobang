@@ -3,7 +3,7 @@ from game_value import GameValue
 
 class Intersection:
     def __init__(self,center):
-        self.image = pygame.image.load('gobang/images/black_chesspiece.png')
+        self.image = pygame.image.load('images/black_chesspiece.png')
         self.rect = self.image.get_rect()
         self.rect.center = center
 
