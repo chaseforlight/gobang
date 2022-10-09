@@ -1,3 +1,7 @@
+'''
+    实现游戏开始时的主菜单界面
+'''
+
 import pygame
 from game_value import GameValue
 
