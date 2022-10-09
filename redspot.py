@@ -1,3 +1,7 @@
+'''
+    跟踪最近一次落子位置
+'''
+
 import pygame
 from game_value import *
 
