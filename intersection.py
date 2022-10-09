@@ -1,3 +1,7 @@
+'''
+    处理棋盘横竖线之间的交叉点，实现点击落子效果
+'''
+
 import pygame
 from game_value import GameValue
 
