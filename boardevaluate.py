@@ -1,3 +1,8 @@
+'''
+    实现棋局评估、落子模拟并返回最佳落子位置
+'''
+
+
 import pygame
 from game_value import GameValue
 import copy
@@ -185,22 +190,22 @@ def inittuple6():
                                     # 黑眠3
                                     if(x == 3 and y == 0):
                                         if(tuple6type[p1][p2][p3][p4][p5][p6] == 0):
-                                            tuple6type[p1][p2][p3][p4][p5][p6] = MIANSAN
+                                            tuple6type[p1][p2][p3][p4][p5][p6] = miansan
 
                                     # 白眠3
                                     if(x == 0 and y == 3):
                                         if(tuple6type[p1][p2][p3][p4][p5][p6] == 0):
-                                            tuple6type[p1][p2][p3][p4][p5][p6] = miansan
+                                            tuple6type[p1][p2][p3][p4][p5][p6] = MIANSAN
 
                                     # 黑眠2
                                     if(x == 2 and y == 0):
                                         if(tuple6type[p1][p2][p3][p4][p5][p6] == 0):
-                                            tuple6type[p1][p2][p3][p4][p5][p6] = MIANER
+                                            tuple6type[p1][p2][p3][p4][p5][p6] = mianer
 
                                     # 白眠2
                                     if(x == 0 and y == 2):
                                         if(tuple6type[p1][p2][p3][p4][p5][p6] == 0):
-                                            tuple6type[p1][p2][p3][p4][p5][p6] = mianer
+                                            tuple6type[p1][p2][p3][p4][p5][p6] = MIANER
 
                             else:  # 无边界
                                 # 白冲4
@@ -237,6 +242,7 @@ def inittuple6():
 inittuple6()
 
 def evaluate(board):
+    '''棋局评估'''
     A = [[0 for i in range(17)] for j in range(17)]
     for i in range(17):
         A[i][0] = 3
@@ -279,9 +285,10 @@ def evaluate(board):
         score += stats[i] * weights[i]
     return score
 
-minnum = float('-inf')
-maxnum = float('inf')
+minnum = float('-inf') #初始 alpha 值
+maxnum = float('inf') #初始 beta 值
 def analyse(board,depth,alpha,beta,maxdepth = 4):
+    '''利用极大极小搜索与alpha-beta剪枝实现给定深度的搜索，返回最佳评估值和最佳落点'''
     best_point = [0,0]
     if depth > maxdepth:
         return evaluate(board),best_point
@@ -313,17 +320,23 @@ def analyse(board,depth,alpha,beta,maxdepth = 4):
         return beta,best_point
     
 def seek_points(board,depth):
-    '''返回一个有10个点的列表，每个点为一列表
-        元组格式为 [x,y]
     '''
-    copyboard = copy.deepcopy(board)
-    points = []
-    is_possible = [[0 for i in range(16)] for j in range(16)]
+        利用局部搜索和静态评价启发，将每一次搜索的点的个数缩小为10，以减少搜索时间
+        返回一个有10个点的列表，每个点为一列表，格式为 [x,y]
 
+        在此函数中，应特别注意depth的影响，做好分类讨论
+    '''
+    copyboard = copy.deepcopy(board) #对于多维列表，需使用此方式深拷贝，否则会无意修改原列表的值
+    points = [] #存储预估10个最佳落点
+    is_possible = [[0 for i in range(16)] for j in range(16)] #存储可能可以落子的位置，1 表示有可能落子
+
+    #根据深度初始化worth列表
     if depth % 2 != 0:
         worth = [[minnum for i in range(16)] for j in range(16)]
     else:
-        worth = [[maxnum for i in range(16)] for j in range(16)]    
+        worth = [[maxnum for i in range(16)] for j in range(16)]
+
+    #以每个有子点为中心，上下、左右、左斜、右斜四个方向各延申三格，设为可能落子点
     for i in range(1,16):
         for j in range(1,16):
             if board[i][j] != 0:
@@ -337,6 +350,8 @@ def seek_points(board,depth):
                     if 0 < i+k < 16 and 0 < j-k < 16:
                         is_possible[i+k][j-k] = 1
 
+    #用棋局评估函数评估每个可能落子点，并将结果存储在worth中。
+    #由于在设置可能落子点时未考虑该点是否已存在棋子，故此处应添加 board[i][j] == 0 的判断
     for i in range(1,16):
         for j in range(1,16):
             if board[i][j] == 0 and is_possible[i][j] == 1:
@@ -348,6 +363,7 @@ def seek_points(board,depth):
                     worth[i][j] = evaluate(copyboard)
                 copyboard[i][j] = 0
 
+    #根据depth选取worth中评估值最高或最低的10个点，并按从优到劣的顺序填充入points列表，以实现更快剪枝
     if depth % 2 != 0:
         for k in range(10):
             w = minnum
@@ -376,15 +392,12 @@ def seek_points(board,depth):
 
     return points
 
-board = [[0 for i in range(16)] for j in range(16)]
-board[8][8] = 1
+#测试用代码
+# board = [[0 for i in range(16)] for j in range(16)]
+# board[8][8] = 1
 #print(seek_points(board,1))
 # value,point = analyse(board,1,minnum,maxnum)
 # print(value,point)
 
-class AI:
-    def __init__(self):
-        pass
-
-    def evaluate_current_board(self):
-        pass
+#该文件参考自 https://blog.csdn.net/livingsu/article/details/104539741
+#            https://blog.csdn.net/livingsu/article/details/104544562
