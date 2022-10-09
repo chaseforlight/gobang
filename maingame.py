@@ -126,7 +126,7 @@ class MainGame:
         for cp in GameValue.chess_piece_list:
             cp.display_chess_piece()
 
-    def blit_redspot(self):
+    def blit_redspot(self): #追踪最后一次下棋位置
         rs = RedSpot(GameValue.last_point)
         rs.display_redspot()
         
@@ -194,7 +194,7 @@ class MainGame:
 
         return False
 
-    def check_draw(self):
+    def check_draw(self): #检查是否和棋
         return GameValue.chess_piece_count == 225
         
     def blit_game_over_text(self):
@@ -202,7 +202,7 @@ class MainGame:
         p.display_text()
 
 
-    def init_ai_vs_ai(self):
+    def init_ai_vs_ai(self): #随机设置黑棋第一点和白棋第一点，以便使 ai vs ai 的棋局富于变化性
         x1 = random.randint(1,15)
         y1 = random.randint(1,15)
         x2 = random.randint(1,15)
@@ -252,7 +252,7 @@ class MainGame:
 
         sleep(1)
 
-    def pvp(self):
+    def pvp(self): #模式一 ： 玩家对玩家
         mouse_pos = pygame.mouse.get_pos()
         x = (mouse_pos[0] + 45) // 60
         y = (mouse_pos[1] + 45) // 60
@@ -290,7 +290,7 @@ class MainGame:
                     if self.check_draw():
                         GameValue.game_over = 3
 
-    def pve(self):
+    def pve(self): #模式二 ：玩家对电脑
         mouse_pos = pygame.mouse.get_pos()
         x = (mouse_pos[0] + 45) // 60
         y = (mouse_pos[1] + 45) // 60
